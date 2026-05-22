@@ -1,43 +1,326 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Gear</title>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+<style>
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #0f0f10;
+    color: #eaeaea;
+    margin: 0;
+    padding: 20px;
+}
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+/* header */
+h1 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+/* títulos */
+h2 {
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #ccc;
+}
+
+/* containers */
+.container {
+    background: #410808;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+
+/* grid produtos */
+#produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+}
+
+/* card produto */
+.produto-card {
+    background: #121214;
+    border-radius: 12px;
+    padding: 18px;
+    transition: 0.25s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.produto-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+/* nome produto */
+.produto-card p:first-child {
+    font-weight: 500;
+}
+
+/* preço */
+.produto-card p:last-of-type {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* botões */
+button {
+    background: #2d2d30;
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #3a3a3d;
+}
+
+/* botão principal */
+.produto-card button {
+    margin-top: auto;
+    background: #3f3f46;
+}
+
+.produto-card button:hover {
+    background: #52525b;
+}
+
+/* carrinho */
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+/* grupo botões */
+.item span:last-child {
+    display: flex;
+    gap: 6px;
+}
+
+/* remover */
+.btn-remove {
+    background: #7f1d1d;
+}
+
+.btn-remove:hover {
+    background: #991b1b;
+}
+
+/* limpar */
+.btn-clear {
+    width: 100%;
+    margin-top: 15px;
+    background: #27272a;
+}
+
+.btn-clear:hover {
+    background: #3f3f46;
+}
+
+/* total */
+#total {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* badge */
+.badge {
+    background: #3a3a3d;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-left: 6px;
+    font-size: 14px;
+}
+
+/* toast */
+#toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #1f1f22;
+    padding: 12px 18px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 0.3s;
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* responsivo */
+@media (max-width: 600px) {
+    .item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Tech Gear</h1>
+
+<h2>Produtos</h2>
+<div id="produtos" class="container"></div>
+
+<h2>🛒 Carrinho <span class="badge" id="contador">0</span></h2>
+<div id="carrinho" class="container"></div>
+
+<h3 id="total"></h3>
+
+<button class="btn-clear" onclick="limparCarrinho()">Limpar Carrinho</button>
+
+<div id="toast">Adicionado</div>
+
+<script>
+// som
+function playClick() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    osc.frequency.setValueAtTime(500, ctx.currentTime);
+    osc.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+}
+
+// toast
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.innerText = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 1200);
+}
+
+let produtos = [
+    { nome: "PC Gamer RTX 4090", preco: 8500 },
+    { nome: "Mouse RGB 16000 DPI", preco: 150 },
+    { nome: "Headset Gamer 7.1", preco: 350 }
+];
+
+let carrinho = [];
+
+function atualizarContador() {
+    let total = carrinho.reduce((s, i) => s + i.qtd, 0);
+    document.getElementById("contador").innerText = total;
+}
+
+function adicionarAoCarrinho(nome) {
+    playClick();
+
+    let item = carrinho.find(p => p.nome === nome);
+
+    if (item) {
+        item.qtd++;
+    } else {
+        let produto = produtos.find(p => p.nome === nome);
+        carrinho.push({ ...produto, qtd: 1 });
+    }
+
+    showToast("Produto adicionado");
+    renderCarrinho();
+}
+
+function adicionar(nome) {
+    playClick();
+    let item = carrinho.find(p => p.nome === nome);
+    item.qtd++;
+    renderCarrinho();
+}
+
+function removerUm(nome) {
+    playClick();
+    let item = carrinho.find(p => p.nome === nome);
+    item.qtd--;
+
+    if (item.qtd <= 0) {
+        carrinho = carrinho.filter(p => p.nome !== nome);
+    }
+
+    renderCarrinho();
+}
+
+function removerItem(nome) {
+    playClick();
+    carrinho = carrinho.filter(p => p.nome !== nome);
+    renderCarrinho();
+}
+
+function limparCarrinho() {
+    playClick();
+    carrinho = [];
+    showToast("Carrinho limpo");
+    renderCarrinho();
+}
+
+function renderProdutos() {
+    let div = document.getElementById("produtos");
+    div.innerHTML = "";
+
+    produtos.forEach(p => {
+        div.innerHTML += `
+            <div class="produto-card">
+                <p>${p.nome}</p>
+                <p>R$ ${p.preco}</p>
+                <button onclick="adicionarAoCarrinho('${p.nome}')">
+                    Adicionar ao carrinho
+                </button>
+            </div>
+        `;
+    });
+}
+
+function renderCarrinho() {
+    let div = document.getElementById("carrinho");
+    let total = 0;
+
+    div.innerHTML = "";
+
+    carrinho.forEach(item => {
+        total += item.preco * item.qtd;
+
+        div.innerHTML += `
+            <div class="item">
+                <span>${item.nome} - R$ ${item.preco} (x${item.qtd})</span>
+                <span>
+                    <button onclick="adicionar('${item.nome}')">+</button>
+                    <button onclick="removerUm('${item.nome}')">-</button>
+                    <button class="btn-remove" onclick="removerItem('${item.nome}')">❌</button>
+                </span>
+            </div>
+        `;
+    });
+
+    document.getElementById("total").innerText =
+        "Total: R$ " + total;
+
+    atualizarContador();
+}
+
+renderProdutos();
+renderCarrinho();
+</script>
+
+</body>
 </html>
